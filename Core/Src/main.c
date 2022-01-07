@@ -58,7 +58,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t BuffGuarda[] = "Hola Mundo Memoria";
+uint8_t BuffLee[20];
 /* USER CODE END 0 */
 
 /**
@@ -99,15 +100,10 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  //W25qxx_Init();
-  HAL_GPIO_WritePin(FLASH_CS_GPIO_Port, FLASH_CS_Pin, GPIO_PIN_SET);
-  HAL_Delay(100);
-
-  uint8_t pTxData[4] = {0x9F, 0xA5, 0xA5, 0xA5};
-  uint8_t pRxData[4];
-  HAL_GPIO_WritePin(FLASH_CS_GPIO_Port, FLASH_CS_Pin, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(&hspi1, pTxData, pRxData, 6, 100);
-  HAL_GPIO_WritePin(FLASH_CS_GPIO_Port, FLASH_CS_Pin, GPIO_PIN_SET);
+  W25qxx_Init();
+  W25qxx_EraseSector(1); // Borra el sector a emplear, necesario para poder escribir
+  W25qxx_WriteSector(BuffGuarda, 1, 0, strlen(BuffGuarda));
+  W25qxx_ReadSector(BuffLee, 1, 0, strlen(BuffGuarda));
   HAL_Delay(100);
   /* USER CODE END 2 */
 
