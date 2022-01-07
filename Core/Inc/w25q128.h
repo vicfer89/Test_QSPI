@@ -76,7 +76,7 @@
 #define N25Q128A_PAGE_SIZE                   0x100     /* 65536 pages of 256 bytes */
 
 #define N25Q128A_DUMMY_CYCLES_READ           8
-#define N25Q128A_DUMMY_CYCLES_READ_QUAD      10
+#define N25Q128A_DUMMY_CYCLES_READ_QUAD      5
 
 #define N25Q128A_BULK_ERASE_MAX_TIME         250000
 #define N25Q128A_SECTOR_ERASE_MAX_TIME       3000
@@ -90,7 +90,7 @@
 #define RESET_MEMORY_CMD                     0x99
 
 /* Identification Operations */
-#define READ_ID_CMD                          0x9E
+#define READ_ID_CMD                          0x92
 #define READ_ID_CMD2                         0x9F
 #define MULTIPLE_IO_READ_ID_CMD              0xAF
 #define READ_SERIAL_FLASH_DISCO_PARAM_CMD    0x5A
@@ -101,7 +101,7 @@
 #define DUAL_OUT_FAST_READ_CMD               0x3B
 #define DUAL_INOUT_FAST_READ_CMD             0xBB
 #define QUAD_OUT_FAST_READ_CMD               0x6B
-#define QUAD_INOUT_FAST_READ_CMD             0xEB
+#define QUAD_INOUT_FAST_READ_CMD             0x94
 
 /* Write Operations */
 #define WRITE_ENABLE_CMD                     0x06
@@ -131,12 +131,12 @@
 #define DUAL_IN_FAST_PROG_CMD                0xA2
 #define EXT_DUAL_IN_FAST_PROG_CMD            0xD2
 #define QUAD_IN_FAST_PROG_CMD                0x32
-#define EXT_QUAD_IN_FAST_PROG_CMD            0x12
+#define EXT_QUAD_IN_FAST_PROG_CMD            0x32
 
 /* Erase Operations */
 #define SUBSECTOR_ERASE_CMD                  0x20
 #define SECTOR_ERASE_CMD                     0xD8
-#define BULK_ERASE_CMD                       0xC7
+#define BULK_ERASE_CMD                       0x60
 
 #define PROG_ERASE_RESUME_CMD                0x7A
 #define PROG_ERASE_SUSPEND_CMD               0x75

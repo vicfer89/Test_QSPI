@@ -19,15 +19,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "spi.h"
-#include "usart.h"
-#include "usb_otg.h"
+#include "quadspi.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
-#include "w25qxx.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,8 +56,12 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t BuffGuarda[] = "Hola Mundo Memoria";
-uint8_t BuffLee[20];
+uint8_t *writebuf = "Hello world from QSPI !";
+
+uint8_t readbuf[100];
+
+uint16_t number = 1234;
+uint8_t buf[100];
 /* USER CODE END 0 */
 
 /**
@@ -96,15 +98,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART3_UART_Init();
-  MX_USB_OTG_FS_PCD_Init();
-  MX_SPI1_Init();
+  MX_QUADSPI_Init();
   /* USER CODE BEGIN 2 */
-  W25qxx_Init();
-  W25qxx_EraseSector(1); // Borra el sector a emplear, necesario para poder escribir
-  W25qxx_WriteSector(BuffGuarda, 1, 0, strlen(BuffGuarda));
-  W25qxx_ReadSector(BuffLee, 1, 0, strlen(BuffGuarda));
-  HAL_Delay(100);
+  if (CSP_QUADSPI_Init() != HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  if (CSP_QSPI_Erase_Block(0) != HAL_OK)
+  {
+ 	  Error_Handler();
+  }
+
+  HAL_Delay(4000);
+  memset(buf,'A',100);
+  if (CSP_QSPI_Write(buf, 0, 100) != HAL_OK)
+  {
+	 Error_Handler();
+  }
+
+
+  if (CSP_QSPI_Read(readbuf, 0, 100) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -126,7 +143,6 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Configure LSE Drive Capability
   */
@@ -166,13 +182,6 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
-  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
